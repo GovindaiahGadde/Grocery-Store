@@ -26,19 +26,9 @@ public class GroceryShopping {
 		int soupQuantity = 0;
 
 		LocalDate purchaseDate = null;
-		boolean flag = false;
 		System.out.println("Enter the date of puchasing and date formate is yyyy-MM-dd");
 
-		do {
-			String date = input.next();
-			try {
-				purchaseDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy[-MM[-dd]]"));
-				flag = false;
-			} catch (DateTimeParseException e) {
-				System.out.println("Date formate is incorrect please Enter correct formate");
-				flag = true;
-			}
-		} while (flag);
+		purchaseDate = validateDateFormate(input, purchaseDate);
 
 		do {
 			System.out.println("Welcome to GroceryStore-Billing");
@@ -104,6 +94,21 @@ public class GroceryShopping {
 		while (choice > 0);
 		System.out.println("Total price : " + subtotal);
 
+	}
+
+	private static LocalDate validateDateFormate(Scanner input, LocalDate purchaseDate) {
+		boolean flag;
+		do {
+			String date = input.next();
+			try {
+				purchaseDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy[-MM[-dd]]"));
+				flag = false;
+			} catch (DateTimeParseException e) {
+				System.out.println("Date formate is incorrect please Enter correct formate");
+				flag = true;
+			}
+		} while (flag);
+		return purchaseDate;
 	}
 
 	/*
