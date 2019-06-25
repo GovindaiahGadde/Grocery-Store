@@ -1,10 +1,9 @@
 package com.ford;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+
+import com.ford.util.GroceryShoppingValidationUtil;
 
 /*
  * GroceryShopping 
@@ -24,11 +23,11 @@ public class GroceryShopping {
 		double subtotal = 0;
 		double price = 0;
 		int soupQuantity = 0;
-
+		CalculateProductPrice productPrice = new CalculateProductPrice();
 		LocalDate purchaseDate = null;
 		System.out.println("Enter the date of puchasing and date formate is yyyy-MM-dd");
-
-		purchaseDate = validateDateFormate(input, purchaseDate);
+		String date = input.next();
+		purchaseDate = GroceryShoppingValidationUtil.validateDateFormat(date, input, purchaseDate);
 
 		do {
 			System.out.println("Welcome to GroceryStore-Billing");
@@ -45,49 +44,34 @@ public class GroceryShopping {
 
 			System.out.println("Please Select Product Number or Enter 0 to exit");
 			choice = input.nextInt();
-
+			GroceryShoppingValidationUtil.validateProductInput(choice, input);
 			if (choice == 0)
 				break;
 
 			System.out.println("Enter Quantity?");
 			int qty = input.nextInt();
+			GroceryShoppingValidationUtil.validateProductQuantity(qty, input);
 			switch (choice) {
 			case 1:
 				soupQuantity = qty;
 				price = 0.65;
-				subtotal = getSubTotal(subtotal, price, qty);
+				subtotal = productPrice.getSubTotal(subtotal, price, qty);
 				break;
 			case 2:
 				price = 0.80;
-				LocalDate discountStartDate = currentDate.minusDays(1);
-				LocalDate discountEndDate = discountStartDate.plusDays(7);
-				if (soupQuantity > 2 && validateDiscountDate(purchaseDate, discountStartDate, discountEndDate)) {
-					int breadDiscount = (int) Math.floor(soupQuantity / 2);
-					if (qty > breadDiscount) {
-						subtotal = subtotal + (((qty - breadDiscount) * price) + (breadDiscount * 0.40));
-					}
-					if (qty < breadDiscount) {
-						subtotal = subtotal + (qty * 0.40);
-					}
-				} else {
-					subtotal = getSubTotal(subtotal, price, qty);
-				}
+				subtotal = productPrice.calculateBreadPrice(currentDate, subtotal, price, soupQuantity, purchaseDate,
+						qty);
 				break;
 			case 3:
 				price = 1.30;
-				subtotal = getSubTotal(subtotal, price, qty);
+				subtotal = productPrice.getSubTotal(subtotal, price, qty);
 				break;
 			case 4:
 				price = 0.10;
-				LocalDate appleDicountStartDate = currentDate.plusDays(3);
-				LocalDate appleDicountEndtDate = YearMonth.from(appleDicountStartDate.plusMonths(1)).atEndOfMonth();
-				if (validateDiscountDate(purchaseDate, appleDicountStartDate, appleDicountEndtDate)) {
-					subtotal = subtotal + (qty * (price - (price * 10 / 100)));
-				} else {
-					subtotal = getSubTotal(subtotal, price, qty);
-				}
+				subtotal = productPrice.calculateApplePrice(currentDate, subtotal, price, purchaseDate, qty);
 				break;
-
+			default:
+				break;
 			}
 		}
 
@@ -96,35 +80,4 @@ public class GroceryShopping {
 
 	}
 
-	private static LocalDate validateDateFormate(Scanner input, LocalDate purchaseDate) {
-		boolean flag;
-		do {
-			String date = input.next();
-			try {
-				purchaseDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy[-MM[-dd]]"));
-				flag = false;
-			} catch (DateTimeParseException e) {
-				System.out.println("Date formate is incorrect please Enter correct formate");
-				flag = true;
-			}
-		} while (flag);
-		return purchaseDate;
-	}
-
-	/*
-	 * Method to calculate subtotal of purchased item
-	 */
-	private static double getSubTotal(double subtotal, double price, int qty) {
-		subtotal = subtotal + (qty * price);
-		return subtotal;
-	}
-
-	/*
-	 * Method to validate discount price based on purchase date
-	 */
-	private static boolean validateDiscountDate(LocalDate purchaseDate, LocalDate appleDicountStartDate,
-			LocalDate appleDicountEndtDate) {
-		return (purchaseDate.equals(appleDicountStartDate) || purchaseDate.equals(appleDicountEndtDate))
-				|| (purchaseDate.isAfter(appleDicountStartDate) && purchaseDate.isBefore(appleDicountEndtDate));
-	}
 }
