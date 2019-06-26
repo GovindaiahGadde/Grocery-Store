@@ -20,7 +20,7 @@ public class CalculateProductPrice {
 			if (qty > breadDiscount) {
 				subtotal = subtotal + (((qty - breadDiscount) * price) + (breadDiscount * 0.40));
 			}
-			if (qty < breadDiscount) {
+			if (qty <= breadDiscount) {
 				subtotal = subtotal + (qty * 0.40);
 			}
 		} else {
