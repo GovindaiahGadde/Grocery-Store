@@ -3,6 +3,7 @@ package com.ford;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import com.ford.util.GroceryShoppingConstants;
 import com.ford.util.GroceryShoppingValidationUtil;
 
 /*
@@ -34,10 +35,10 @@ public class GroceryShopping {
 			System.out.println();
 			System.out.println("Product     unit      cost");
 			System.out.println("==========================");
-			System.out.println("1.soup      tin       0.65");
-			System.out.println("2.bread     loaf      0.80");
-			System.out.println("3.milk      bottle    1.30");
-			System.out.println("4.apples    single    0.10");
+			System.out.println("1.soup      tin       " + GroceryShoppingConstants.SOUP_PRICE);
+			System.out.println("2.bread     loaf      " + GroceryShoppingConstants.BREAD_PRICE);
+			System.out.println("3.milk      bottle    " + GroceryShoppingConstants.MILK_PRICE);
+			System.out.println("4.apples    single    " + GroceryShoppingConstants.APPLE_PRICE);
 			System.out.println();
 			System.out.println("0. Quit");
 			System.out.println("");
@@ -54,20 +55,20 @@ public class GroceryShopping {
 			switch (choice) {
 			case 1:
 				soupQuantity = qty;
-				price = 0.65;
+				price = GroceryShoppingConstants.SOUP_PRICE;
 				subtotal = productPrice.getSubTotal(subtotal, price, qty);
 				break;
 			case 2:
-				price = 0.80;
+				price = GroceryShoppingConstants.BREAD_PRICE;
 				subtotal = productPrice.calculateBreadPrice(currentDate, subtotal, price, soupQuantity, purchaseDate,
 						qty);
 				break;
 			case 3:
-				price = 1.30;
+				price = GroceryShoppingConstants.MILK_PRICE;
 				subtotal = productPrice.getSubTotal(subtotal, price, qty);
 				break;
 			case 4:
-				price = 0.10;
+				price = GroceryShoppingConstants.APPLE_PRICE;
 				subtotal = productPrice.calculateApplePrice(currentDate, subtotal, price, purchaseDate, qty);
 				break;
 			default:
